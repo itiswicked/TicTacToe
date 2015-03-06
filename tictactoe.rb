@@ -1,8 +1,8 @@
 class Game
-	attr_accessor :board, :active_symbol, :inactive_symbol, :selection
+  attr_accessor :board, :active_symbol, :inactive_symbol, :selection
   attr_reader :win_matches, :coordinates
 
-	def initialize
+  def initialize
     @board = [[1, 2, 3],
               [4, 5, 6],
               [7, 8, 9]]
@@ -17,9 +17,9 @@ class Game
                     [0,4,8],[6,4,2]] # Diagonal Matches
   end
 
-  def show_rules
-    puts "\nWelcome to Tic-Tac-Toe! Simply type in the number of the square you\n
-    wish to place your character in."
+  def rules
+    puts "\nWelcome to Tic-Tac-Toe! Simply type in the number of the square\n
+    you wish to place your character in."
   end
 
   def display
@@ -46,8 +46,6 @@ class Game
     board[selection.first][selection.last].ord <= 9
   end
 
-
-
   def win?
     win_matches.any? do |match|
       match.all? { |cell| flat_board[cell] == active_symbol }
@@ -73,6 +71,7 @@ end
 
 p = Game.new
 p.display
+p.rules
 
 loop do
   p.prompt
