@@ -1,75 +1,96 @@
 class Game
-	attr_accessor :board, :active_symbol, :inactive_symbol
-  attr_reader 	:player_input
+	attr_accessor :board, :active_symbol, :inactive_symbol, :selection
+  attr_reader :win_matches, :coordinates
 
 	def initialize
-    @board = [["-", "-", "-"],
-              ["-", "-", "-"],
-              ["-", "-", "-"]]
-    @player_input = []
+    @board = [[1, 2, 3],
+              [4, 5, 6],
+              [7, 8, 9]]
     @active_symbol = "X"
     @inactive_symbol = "O"
+    @selection = []
+    @coordinates = [[0,0],[0,1],[0,2],
+                    [1,0],[1,1],[1,2],
+                    [2,0],[2,1],[2,2]]
+    @win_matches = [[0,3,6],[1,4,7],[2,5,8], # Vertical Matches
+                    [0,1,2],[3,4,5],[6,7,8], # Horizontal Matches
+                    [0,4,8],[6,4,2]] # Diagonal Matches
   end
 
-  def display_rules
-    puts "\nWelcome to Tic-Tac-Toe! 2 Players will take turns alternatively placing\n
-    X's or O's on the board. When a player gets three in a row, they win!\n
-    The board has a coordinate system, starting with 0,0 as the upper left\n
-    cell and increasing in number as you go down and right. To select a cell\n
-    to place your character in, simply type the coordinate numbers with a\n
-    space in between: 1 1. 1 1 would refer to the center cell. Happy winning!"
+  def show_rules
+    puts "\nWelcome to Tic-Tac-Toe! Simply type in the number of the square you\n
+    wish to place your character in."
   end
 
-  def display_board
+  def display
     board.map do |row|
       puts row.join(" | ").center(20)
     end
   end
 
-   def user_prompt
+   def prompt
     puts "#{active_symbol}'s turn:"
-    player_input = gets.chomp
-    player_input
   end
 
-  def player_input=(input)
-  	input.split(/,\s*/).each do |num|
-  		@player_input << num.to_i
-  	end
-    put_to_board
+  def translate_input=(player_input)
+    coordinates[player_input.to_i - 1].each do |num|
+      selection << num
+    end
   end
 
   def put_to_board
-  	if check_board
-    	board[player_input[0]][player_input[1]] = active_symbol
-    	display_board
-    	unless check_for_win
-    		symbol_switch
-        user_prompt
-    	end
-    else
-      "That space is taken!"
-      user_prompt
+    board[selection.first][selection.last] = active_symbol
+  end
+
+  def valid_move?
+    board[selection.first][selection.last].ord <= 9
+  end
+
+
+
+  def win?
+    win_matches.any? do |match|
+      match.all? { |cell| flat_board[cell] == active_symbol }
     end
+  end
+
+  def draw?
+    flat_board.all? do |element| 
+      element.class == "String".class
+    end
+  end
+
+  def switch_symbols
+    @active_symbol, @inactive_symbol = @inactive_symbol, @active_symbol
   end
 
   private
 
-  def symbol_switch
-    active_symbol, inactive_symbol = inactive_symbol, active_symbol
+  def flat_board
+    board.flatten
   end
-
-  def check_board
-  	board[player_input[0]][player_input[1]] == "-"
-  end
-
-  def check_for_win; 
-  	false
-  end
-
 end
 
-a = Game.new
-a.display_board
-a.display_rules
-a.user_prompt
+p = Game.new
+p.display
+
+loop do
+  p.prompt
+  p.translate_input = gets.chomp
+  if p.valid_move?
+    p.put_to_board
+    p.display
+    if p.win?
+      puts "Winner!"
+      break
+    elsif p.draw?
+      puts "Draw"
+      break
+    end
+    p.switch_symbols    
+  else
+    puts "Not a valid move!"
+  end
+  p.selection = []  
+end
+
