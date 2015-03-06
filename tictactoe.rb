@@ -1,13 +1,13 @@
 class Game
-  attr_accessor :board, :active_symbol, :inactive_symbol, :selection
+  attr_accessor :board, :active_player, :inactive_player, :selection
   attr_reader :win_matches, :coordinates
 
   def initialize
     @board = [[1, 2, 3],
               [4, 5, 6],
               [7, 8, 9]]
-    @active_symbol = "X"
-    @inactive_symbol = "O"
+    @active_player = "X"
+    @inactive_player = "O"
     @selection = []
     @coordinates = [[0,0],[0,1],[0,2],
                     [1,0],[1,1],[1,2],
@@ -17,19 +17,10 @@ class Game
                     [0,4,8],[6,4,2]] # Diagonal Matches
   end
 
-  def rules
-    puts "\nWelcome to Tic-Tac-Toe! Simply type in the number of the square\n
-    you wish to place your character in."
-  end
-
   def display
     board.map do |row|
       puts row.join(" | ").center(20)
     end
-  end
-
-   def prompt
-    puts "#{active_symbol}'s turn:"
   end
 
   def translate_input=(player_input)
@@ -38,28 +29,30 @@ class Game
     end
   end
 
-  def put_to_board
-    board[selection.first][selection.last] = active_symbol
-  end
-
   def valid_move?
     board[selection.first][selection.last].ord <= 9
   end
 
+  def put_to_board
+    board[selection.first][selection.last] = active_player
+  end
+
   def win?
     win_matches.any? do |match|
-      match.all? { |cell| flat_board[cell] == active_symbol }
+      match.all? { |cell| flat_board[cell] == active_player }
     end
   end
 
   def draw?
     flat_board.all? do |element| 
-      element.class == "String".class
+      element.class == String
     end
   end
 
-  def switch_symbols
-    @active_symbol, @inactive_symbol = @inactive_symbol, @active_symbol
+# This method switches the symbols X and O 
+# between active_player and inactive_player
+  def switch_players 
+    @active_player, @inactive_player = @inactive_player, @active_player
   end
 
   private
@@ -71,10 +64,11 @@ end
 
 p = Game.new
 p.display
-p.rules
+puts "\nWelcome to Tic-Tac-Toe! Simply type in the number of the square\n
+    you wish to place your character in."
 
 loop do
-  p.prompt
+  puts "#{p.active_player}'s turn:"
   p.translate_input = gets.chomp
   if p.valid_move?
     p.put_to_board
@@ -86,7 +80,7 @@ loop do
       puts "Draw"
       break
     end
-    p.switch_symbols    
+    p.switch_players    
   else
     puts "Not a valid move!"
   end
