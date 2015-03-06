@@ -35,7 +35,7 @@ class Game
   end
 
   def valid_move?
-    board[selection.first][selection.last].ord <= 9
+    board[selection.first][selection.last].class == Fixnum
   end
 
   def put_to_board
