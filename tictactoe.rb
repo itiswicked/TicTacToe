@@ -1,5 +1,5 @@
 class Game
-  attr_accessor :board, :active_player, :inactive_player, :selection
+  attr_accessor :board, :active_player, :inactive_player, :selection, :player_input
   attr_reader :win_matches, :coordinates
 
   def initialize
@@ -8,6 +8,7 @@ class Game
               [7, 8, 9]]
     @active_player = "X"
     @inactive_player = "O"
+    @player_input = String.new
     @selection = []
     @coordinates = [[0,0],[0,1],[0,2],
                     [1,0],[1,1],[1,2],
@@ -23,7 +24,11 @@ class Game
     end
   end
 
-  def translate_input=(player_input)
+  def valid_input?
+    player_input.to_i.between?(1,9)
+  end
+
+  def translate_input
     coordinates[player_input.to_i - 1].each do |num|
       selection << num
     end
@@ -69,21 +74,25 @@ puts "\nWelcome to Tic-Tac-Toe! Simply type in the number of the square\n
 
 loop do
   puts "#{p.active_player}'s turn:"
-  p.translate_input = gets.chomp
-  if p.valid_move?
-    p.put_to_board
-    p.display
-    if p.win?
-      puts "Winner!"
-      break
-    elsif p.draw?
-      puts "Draw"
-      break
+  p.player_input = gets.chomp
+  if p.valid_input?
+    p.translate_input
+    if p.valid_move?
+      p.put_to_board
+      p.display
+      if p.win?
+        puts "Winner!"
+        break
+      elsif p.draw?
+        puts "Draw"
+        break
+      end
+      p.switch_players    
+    else
+      puts "Not a valid move! That space is taken"
     end
-    p.switch_players    
   else
-    puts "Not a valid move!"
+    puts "Not a valid input! Input must be 1 - 9."
   end
   p.selection = []  
 end
-
