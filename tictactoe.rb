@@ -49,8 +49,8 @@ class Game
     end
   end
 
-# This method switches the symbols X and O 
-# between active_player and inactive_player
+  # This method switches the symbols X and O 
+  # between active_player and inactive_player
   def switch_players 
     @active_player, @inactive_player = @inactive_player, @active_player
   end
