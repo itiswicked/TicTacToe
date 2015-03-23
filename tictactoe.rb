@@ -37,7 +37,7 @@ class Game
   # determines wheather a game board cell contains a number, numbers being
   # placeholders for empty cells.
   def valid_move?
-    board[selection.first][selection.last].class == Fixnum
+    board[selection.first][selection.last].is_a? Fixnum
   end
 
   def put_to_board
