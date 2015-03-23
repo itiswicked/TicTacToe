@@ -34,6 +34,8 @@ class Game
     end
   end
 
+  # determines wheather a game board cell contains a number, numbers being
+  # placeholders for empty cells.
   def valid_move?
     board[selection.first][selection.last].class == Fixnum
   end
@@ -62,6 +64,7 @@ class Game
 
   private
 
+  #this is a helper method to flatten the board for easier iteration by other methods
   def flat_board
     board.flatten
   end
